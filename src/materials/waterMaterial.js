@@ -19,7 +19,6 @@ const vertexShader = `
 	void main() {
 
 		vUv = uv;
-		float t = time * 2.;
 
 		// VERTEX POSITION
 
@@ -27,10 +26,9 @@ const vertexShader = `
 
 		// DISPLACEMENT
 
-		float noise = smoothNoise(mvPosition.xz * 0.5 + vec2(0., t));
-		noise = pow(noise * 0.5 + 0.5, 2.) * 2.;
+		float noise = smoothNoise( mvPosition.xz + vec2( time * 1.2, time * 1.7 ) );
 
-		mvPosition.y -= noise;
+		mvPosition.y += noise * 0.5;
 
 		//
 
@@ -50,10 +48,11 @@ const fragmentShader = `
 	${ shaderUtils.smoothNoise }
 
 	void main() {
-		vec3 waterNormal1 = texture2D( water_texture1, vUv + time * 0.02 ).xyz;
-		vec3 waterNormal2 = texture2D( water_texture2, vUv + vec2( time * 0.02, time * 0.01 ) ).xyz;
-		vec3 mixVal = texture2D( water_texture2, vUv - time * 0.05 ).xyz;
-		vec3 waterNormal = mix( waterNormal1, waterNormal2, mixVal.x );
+		float t = time * 0.5;
+		vec3 waterNormal1 = texture2D( water_texture1, vUv + t * 0.02 ).xyz;
+		vec3 waterNormal2 = texture2D( water_texture2, vUv + vec2( t * 0.02, t * 0.01 ) ).xyz;
+		vec3 mixVal = texture2D( water_texture2, vUv + t * 0.05 ).xyz;
+		vec3 waterNormal = mix( waterNormal1, waterNormal2, dot( mixVal, vec3( 0, 1.0, 0 ) ) );
 		gl_FragColor = vec4( waterNormal, 1.0 );
 	}
 `;
