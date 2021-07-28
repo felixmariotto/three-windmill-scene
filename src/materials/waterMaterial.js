@@ -2,102 +2,88 @@
 import * as THREE from 'three';
 import shaderUtils from './shaderUtils.js';
 
+import waterTexture1URL from '../../assets/waterNormal1.jpg'
+import waterTexture2URL from '../../assets/waterNormal2.jpg'
+
 //
 
-const material = new THREE.MeshStandardMaterial({
-	roughness: 0.1,
-	metalness: 1.0
-});
-
-material.onBeforeCompile = function ( shader ) {
-
-	// VERTEX
-
-	shader.vertexShader = `
-
+const vertexShader = `
 	varying vec2 vUv;
 
 	uniform float time;
+	uniform sampler2D water_texture1;
+	uniform sampler2D water_texture2;
 
-	` + shaderUtils.smoothNoise + shader.vertexShader;
+	${ shaderUtils.smoothNoise }
 
-	//
-
-	shader.vertexShader = shader.vertexShader.replace(
-
-		'vViewPosition = - mvPosition.xyz;',
-
-		//
-
-		`
-		float noise = smoothNoise( mvPosition.xz + time );
-    	noise = pow (noise * 0.5 + 0.5, 2.0 ) * 2.0;
-
-    	mvPosition.y += noise * 10.0;
-
-		vViewPosition = - mvPosition.xyz;
+	void main() {
 
 		vUv = uv;
+		float t = time * 2.;
 
-		`
-	);
+		// VERTEX POSITION
 
-	// FRAGMENT
+		vec4 mvPosition = vec4( position, 1.0 );
 
-	shader.fragmentShader = shader.fragmentShader.replace(
+		// DISPLACEMENT
 
-		'void main()',
+		float noise = smoothNoise(mvPosition.xz * 0.5 + vec2(0., t));
+		noise = pow(noise * 0.5 + 0.5, 2.) * 2.;
 
-		//
-
-		`
-		uniform float time;
-
-		varying vec2 vUv;
-
-		vec2 getMatcapUV() {
-			vec3 normal = normalize( vNormal );
-			vec3 viewDir = normalize( vViewPosition );
-			vec3 x = normalize( vec3( viewDir.z, 0.0, - viewDir.x ) );
-			vec3 y = cross( viewDir, x );
-			return vec2( dot( x, normal ), dot( y, normal ) ) * 0.497 + 0.5;
-		}
-
-		void main()
-
-		`
-	);
-
-	//
-
-	shader.fragmentShader = shader.fragmentShader.replace(
-
-		'gl_FragColor = vec4( outgoingLight, diffuseColor.a );',
+		mvPosition.y -= noise;
 
 		//
 
-		`
+		vec4 modelViewPosition = modelViewMatrix * mvPosition;
+		gl_Position = projectionMatrix * modelViewPosition;
 
-		vec2 matcapUV = getMatcapUV();
+	}
+`;
 
-	    gl_FragColor = vec4( matcapUV, 1.0, 1.0 );
+const fragmentShader = `
+	varying vec2 vUv;
 
-		`
-	)
+	uniform float time;
+	uniform sampler2D water_texture1;
+	uniform sampler2D water_texture2;
 
-	shader.uniforms.time = { value: 0 };
-	material.userData.uniforms = shader.uniforms;
+	${ shaderUtils.smoothNoise }
 
+	void main() {
+		vec3 waterNormal1 = texture2D( water_texture1, vUv + time * 0.02 ).xyz;
+		vec3 waterNormal2 = texture2D( water_texture2, vUv + vec2( time * 0.02, time * 0.01 ) ).xyz;
+		vec3 mixVal = texture2D( water_texture2, vUv - time * 0.05 ).xyz;
+		vec3 waterNormal = mix( waterNormal1, waterNormal2, mixVal.x );
+		gl_FragColor = vec4( waterNormal, 1.0 );
+	}
+`;
+
+const textureLoader = new THREE.TextureLoader();
+
+const waterTexture1 = textureLoader.load( waterTexture1URL );
+waterTexture1.wrapS = THREE.RepeatWrapping;
+waterTexture1.wrapT = THREE.RepeatWrapping;
+
+const waterTexture2 = textureLoader.load( waterTexture2URL );
+waterTexture2.wrapS = THREE.RepeatWrapping;
+waterTexture2.wrapT = THREE.RepeatWrapping;
+
+const uniforms = {
+	time: { value: 0 },
+	water_texture1: { value: waterTexture1 },
+	water_texture2: { value: waterTexture2 }
 }
 
+const material = new THREE.ShaderMaterial({
+	vertexShader,
+	fragmentShader,
+	uniforms,
+	side: THREE.DoubleSide
+} );
+
 material.userData.update = function ( elapsedTime ) {
-
-	if ( material.userData.uniforms ) {
-
-		material.userData.uniforms.time.value = elapsedTime;
-		
-	}
-
+	uniforms.time.value = elapsedTime;
+	material.uniformsNeedUpdate = true;
 }
 
 //
