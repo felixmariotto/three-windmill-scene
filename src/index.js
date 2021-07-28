@@ -4,6 +4,12 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
+import nx from '../assets/cubemap/nx.jpg';
+import ny from '../assets/cubemap/ny.jpg';
+import nz from '../assets/cubemap/nz.jpg';
+import px from '../assets/cubemap/px.jpg';
+import py from '../assets/cubemap/py.jpg';
+import pz from '../assets/cubemap/pz.jpg';
 
 //
 
@@ -56,6 +62,10 @@ assets.then( a => {
 	blades = a.blades;
 
 } );
+
+const textureCube = new THREE.CubeTextureLoader().load( [ px, nx, py, ny, pz, nz ] );
+
+scene.background = textureCube;
 
 // animation loop
 
