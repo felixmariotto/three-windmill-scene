@@ -4,6 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import assets from './assets.js';
 
+//
+
+let blades;
+
 // scene basic setup
 
 const WIDTH = window.innerWidth;
@@ -20,6 +24,12 @@ renderer.setSize( WIDTH, HEIGHT );
 document.body.append( renderer.domElement );
 
 const controls = new OrbitControls( camera, renderer.domElement );
+
+window.addEventListener( 'resize', () => {
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+} );
 
 // lights
 
@@ -39,6 +49,8 @@ assets.then( a => {
 		a.grass
 	);
 
+	blades = a.blades;
+
 } );
 
 // animation loop
@@ -46,6 +58,13 @@ assets.then( a => {
 loop();
 
 function loop() {
+	animate();
 	requestAnimationFrame( loop );
 	renderer.render( scene, camera );
+}
+
+function animate() {
+
+	if ( blades ) blades.rotation.z += 0.003;
+
 }
