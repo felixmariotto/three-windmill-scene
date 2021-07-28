@@ -1,6 +1,23 @@
 
+import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 import landscapeURL from '../assets/windmill.glb';
+
+import waterMaterial from './materials/waterMaterial.js';
+
+//
+
+const waterGeometry = new THREE.PlaneGeometry( 500, 500, 100, 100 );
+waterGeometry.rotateX( - Math.PI / 2 );
+waterGeometry.translate( 0, 0, -100 );
+
+const water = new THREE.Mesh(
+	waterGeometry,
+	waterMaterial //new THREE.MeshNormalMaterial({ wireframe: true })
+);
+
+//
 
 export default new Promise( (resolve) => {
 
@@ -17,7 +34,9 @@ export default new Promise( (resolve) => {
 			windmill,
 			blades,
 			ground,
-			grass
+			grass,
+			// not from the GLB file
+			water
 		};
 
 		resolve( assets );

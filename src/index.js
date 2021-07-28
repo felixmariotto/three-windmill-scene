@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import assets from './assets.js';
+import waterMaterial from './materials/waterMaterial.js';
 
 //
 
@@ -25,6 +26,8 @@ document.body.append( renderer.domElement );
 
 const controls = new OrbitControls( camera, renderer.domElement );
 
+const clock = new THREE.Clock();
+
 window.addEventListener( 'resize', () => {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
@@ -46,7 +49,8 @@ assets.then( a => {
 	scene.add(
 		a.windmill,
 		a.ground,
-		a.grass
+		a.grass,
+		a.water
 	);
 
 	blades = a.blades;
@@ -66,5 +70,7 @@ function loop() {
 function animate() {
 
 	if ( blades ) blades.rotation.z += 0.003;
+
+	waterMaterial.userData.update( clock.getElapsedTime() );
 
 }
