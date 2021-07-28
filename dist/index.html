@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,user-scalable=no,minimum-scale=1,maximum-scale=1"><title>Reboot min-OS</title><meta name="description" content="Play online now. Explore a spaceship and solve puzzles with a ball robot tethered to an electric cable."><meta property="og:title" content="Reboot min-OS"/><meta property="og:url" content="https://felixmariotto.github.io/reboot-min-os"/><meta property="og:description" content="Web game: Explore a spaceship and solve puzzles."><meta property="og:image" content="https://i.ibb.co/KwgpVFD/min-os-social-image.jpg"><meta property="og:image:type" content="image/jpg"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="1024"><meta property="og:type" content="website"/><link rel="icon" sizes="any" href="logo svg" type="image/svg+xml"><link rel="icon" href="logo ico"/><link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Roboto&family=Space+Mono&display=swap" rel="stylesheet"></head><body><script src="./bundle.js"></script><script>window.addEventListener( 'load', () => {
+				
+				const script = document.createElement('script');
+
+				script.src = "./engine.js";
+
+				script.onload = function () {
+
+					const event = new Event( 'engine-loaded' );
+
+					window.dispatchEvent( event );
+
+				};
+
+				document.head.appendChild(script);
+
+			} );</script></body></html>

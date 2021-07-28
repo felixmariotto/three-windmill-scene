@@ -1,0 +1,26 @@
+{
+  "name": "windmill",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint -c config/.eslintrc src",
+    "lint-fix": "eslint --fix -c config/.eslintrc src",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack serve --config config/webpack.config.js --open --env NODE_ENV=dev",
+    "build": "npx webpack --config config/webpack.config.js --env NODE_ENV=prod"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "css-loader": "^6.2.0",
+    "eslint": "^7.31.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "style-loader": "^3.2.1",
+    "three": "^0.130.1",
+    "webpack": "^5.46.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
+  }
+}
