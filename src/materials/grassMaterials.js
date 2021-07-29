@@ -2,7 +2,15 @@
 import * as THREE from 'three';
 import shaderUtils from './shaderUtils.js';
 
-function makeGrassMaterial() {
+import grassTextureURL from '../../assets/grass.png';
+import bigGrassTextureURL from '../../assets/big_grass.png';
+import waterGrassTextureURL from '../../assets/water_grass.png';
+
+//
+
+const textureLoader = new THREE.TextureLoader();
+
+function makeGrassMaterial( textureURL ) {
 
 	const vertexShader = `
 		varying vec2 vUv;
@@ -45,22 +53,29 @@ function makeGrassMaterial() {
 	const fragmentShader = `
 		varying vec2 vUv;
 
+		uniform sampler2D map;
+
 		void main() {
-			vec3 baseColor = vec3( 0.41, 1.0, 0.5 );
-			float clarity = ( ( 1.0 - vUv.y ) * 0.875 ) + 0.125;
-			gl_FragColor = vec4( baseColor * clarity, 1 );
+
+			vec2 uv = vUv;
+			uv.y = 1.0 - uv.y;
+			vec4 sampledC = texture2D( map, uv );
+
+			gl_FragColor = sampledC;
 		}
 	`;
 
 	const uniforms = {
-		time: { value: 0 }
+		time: { value: 0 },
+		map: { value: textureLoader.load( textureURL ) }
 	}
 
 	const material = new THREE.ShaderMaterial( {
 		vertexShader,
 		fragmentShader,
 		uniforms,
-		side: THREE.DoubleSide
+		side: THREE.DoubleSide,
+		transparent: true
 	} );
 
 	material.userData.update = function ( elapsedTime ) {
@@ -74,9 +89,9 @@ function makeGrassMaterial() {
 
 //
 
-const grass = makeGrassMaterial();
-const bigGrass = new THREE.MeshBasicMaterial({ color: 'blue' });
-const waterGrass = new THREE.MeshBasicMaterial({ color: 'green' });
+const grass = makeGrassMaterial( grassTextureURL );
+const bigGrass = makeGrassMaterial( bigGrassTextureURL );
+const waterGrass = makeGrassMaterial( waterGrassTextureURL );
 
 //
 

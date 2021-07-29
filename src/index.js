@@ -104,5 +104,7 @@ function animate() {
 
 	waterMaterial.userData.update( t );
 	grassMaterials.grass.userData.update( t );
+	grassMaterials.bigGrass.userData.update( t );
+	grassMaterials.waterGrass.userData.update( t );
 
 }
