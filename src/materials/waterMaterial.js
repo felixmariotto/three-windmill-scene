@@ -54,7 +54,7 @@ const fragmentShader = `
 
 		// WATER COLOURING DEPENDING ON NORMAL
 
-		float t = time * 0.5;
+		float t = time * 0.3;
 		vec3 waterNormal1 = texture2D( water_texture1, vUv + t * 0.02 ).xyz;
 		vec3 waterNormal2 = texture2D( water_texture2, vUv + vec2( t * 0.02, t * 0.01 ) ).xyz;
 		vec3 mixVal = texture2D( water_texture2, vUv + t * 0.05 ).xyz;

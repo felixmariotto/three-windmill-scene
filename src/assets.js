@@ -53,7 +53,7 @@ for ( let i=0 ; i<CLOUDS_NUMBER ; i++ ) {
 	dummy.scale.setScalar( CLOUD_MIN_SIZE + Math.random() * ( CLOUD_MAX_SIZE - CLOUD_MIN_SIZE ) );
 
 	dummy.userData.update = function update() {
-		spherical.theta -= CLOUDS_SPEED * speed;
+		spherical.theta += CLOUDS_SPEED * speed;
 		dummy.position.setFromSpherical( spherical );
 		dummy.lookAt( clouds.position );
 		dummy.updateMatrix();
