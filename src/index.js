@@ -101,10 +101,7 @@ function loop() {
 function animate() {
 
 	if ( blades ) blades.rotation.z += 0.003;
-
 	if ( sky ) sky.userData.update();
-
-
 
 	const t = clock.getElapsedTime();
 

@@ -6,6 +6,7 @@ import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtil
 import landscapeURL from '../assets/windmill.glb';
 
 import waterMaterial from './materials/waterMaterial.js';
+import cloudMaterial from './materials/cloudMaterial.js';
 import grassMaterials from './materials/grassMaterials.js';
 
 // WATER
@@ -30,7 +31,7 @@ const cloudVelocity = 0.5;
 
 const clouds = new THREE.InstancedMesh(
 	new THREE.PlaneGeometry(),
-	new THREE.MeshNormalMaterial(),
+	cloudMaterial,
 	CLOUDS_NUMBER
 );
 
