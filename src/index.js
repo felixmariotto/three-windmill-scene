@@ -23,6 +23,7 @@ const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 
 const scene = new THREE.Scene();
+scene.fog = new THREE.Fog( 0xffffff, 50, 600 );
 
 const camera = new THREE.PerspectiveCamera( 50, WIDTH/HEIGHT, 0.1, 1000 );
 camera.position.set( 0, 50, 50 );
@@ -57,7 +58,7 @@ const dirLight = ShadowedLight({
 	far: 250,
 	intensity: 0.5,
 	radius: 10,
-	useHelpers: true
+	// useHelpers: true
 });
 
 scene.add( light, dirLight, dirLight.helpers );

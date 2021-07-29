@@ -9,6 +9,7 @@ import waterTexture2URL from '../../assets/waterNormal2.jpg'
 
 const vertexShader = `
 	varying vec2 vUv;
+	varying vec4 vPos;
 
 	uniform float time;
 	uniform sampler2D water_texture1;
@@ -33,6 +34,7 @@ const vertexShader = `
 		//
 
 		vec4 modelViewPosition = modelViewMatrix * mvPosition;
+		vPos = modelViewPosition;
 		gl_Position = projectionMatrix * modelViewPosition;
 
 	}
@@ -40,6 +42,7 @@ const vertexShader = `
 
 const fragmentShader = `
 	varying vec2 vUv;
+	varying vec4 vPos;
 
 	uniform float time;
 	uniform sampler2D water_texture1;
@@ -48,12 +51,24 @@ const fragmentShader = `
 	${ shaderUtils.smoothNoise }
 
 	void main() {
+
+		// WATER COLOURING DEPENDING ON NORMAL
+
 		float t = time * 0.5;
 		vec3 waterNormal1 = texture2D( water_texture1, vUv + t * 0.02 ).xyz;
 		vec3 waterNormal2 = texture2D( water_texture2, vUv + vec2( t * 0.02, t * 0.01 ) ).xyz;
 		vec3 mixVal = texture2D( water_texture2, vUv + t * 0.05 ).xyz;
 		vec3 waterNormal = mix( waterNormal1, waterNormal2, dot( mixVal, vec3( 0, 1.0, 0 ) ) );
-		gl_FragColor = vec4( waterNormal, 1.0 );
+		
+		// FOG
+
+		float minFog = 300.0;
+		float maxFog = 500.0;
+		float fogIntensity = max( 0.0, length( vPos.xyz ) - minFog ) / maxFog;
+
+		//
+
+		gl_FragColor = vec4( waterNormal, 1.0 - fogIntensity );
 	}
 `;
 
@@ -77,7 +92,8 @@ const material = new THREE.ShaderMaterial({
 	vertexShader,
 	fragmentShader,
 	uniforms,
-	side: THREE.DoubleSide
+	side: THREE.DoubleSide,
+	transparent: true
 } );
 
 material.userData.update = function ( elapsedTime ) {

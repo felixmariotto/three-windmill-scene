@@ -8,9 +8,9 @@ import waterMaterial from './materials/waterMaterial.js';
 
 //
 
-const waterGeometry = new THREE.PlaneGeometry( 500, 500, 100, 100 );
+const waterGeometry = new THREE.PlaneGeometry( 800, 800, 100, 100 );
 waterGeometry.rotateX( - Math.PI / 2 );
-waterGeometry.translate( 0, -3, -100 );
+waterGeometry.translate( -150, -3, -250 );
 
 const water = new THREE.Mesh(
 	waterGeometry,
