@@ -10,8 +10,7 @@
     "dev": "webpack serve --config config/webpack.config.js --open --env NODE_ENV=dev",
     "build": "npx webpack --config config/webpack.config.js --env NODE_ENV=prod"
   },
-  "author": "",
-  "license": "MIT",
+  "author": "Felix Mariotto",
   "dependencies": {
     "css-loader": "^6.2.0",
     "eslint": "^7.31.0",

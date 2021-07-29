@@ -62,7 +62,7 @@ const fragmentShader = `
 		
 		// FOG
 
-		float minFog = 300.0;
+		float minFog = 350.0;
 		float maxFog = 500.0;
 		float fogIntensity = max( 0.0, length( vPos.xyz ) - minFog ) / maxFog;
 

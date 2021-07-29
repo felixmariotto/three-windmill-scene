@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
+import grassMaterials from './materials/grassMaterials.js';
 import ShadowedLight from './ShadowedLight.js';
 
 import nx from '../assets/cubemap/nx.jpg';
@@ -99,6 +100,9 @@ function animate() {
 
 	if ( blades ) blades.rotation.z += 0.003;
 
-	waterMaterial.userData.update( clock.getElapsedTime() );
+	const t = clock.getElapsedTime();
+
+	waterMaterial.userData.update( t );
+	grassMaterials.grass.userData.update( t );
 
 }

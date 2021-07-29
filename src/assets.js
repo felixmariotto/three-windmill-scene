@@ -6,6 +6,7 @@ import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtil
 import landscapeURL from '../assets/windmill.glb';
 
 import waterMaterial from './materials/waterMaterial.js';
+import grassMaterials from './materials/grassMaterials.js';
 
 //
 
@@ -20,11 +21,11 @@ const water = new THREE.Mesh(
 
 //
 
-function makeInstancedMeshFrom( container ) {
+function makeInstancedMeshFrom( container, material ) {
 
 	const mesh = new THREE.InstancedMesh(
 		container.children[0].geometry,
-		new THREE.MeshNormalMaterial(),
+		material,
 		container.children.length
 	);
 
@@ -51,19 +52,13 @@ export default new Promise( (resolve) => {
 		const blades = glb.scene.getObjectByName( 'blades' );
 		const ground = glb.scene.getObjectByName( 'ground' );
 
-		/*
-		const grass = glb.scene.getObjectByName( 'grass' );
-		const bigGrass = glb.scene.getObjectByName( 'big_grass' );
-		const waterGrass = glb.scene.getObjectByName( 'water_grass' );
-		*/
-
 		let grass = glb.scene.getObjectByName( 'grass' );
 		let bigGrass = glb.scene.getObjectByName( 'big_grass' );
 		let waterGrass = glb.scene.getObjectByName( 'water_grass' );
 
-		grass = makeInstancedMeshFrom( grass );
-		bigGrass = makeInstancedMeshFrom( bigGrass );
-		waterGrass = makeInstancedMeshFrom( waterGrass );
+		grass = makeInstancedMeshFrom( grass, grassMaterials.grass );
+		bigGrass = makeInstancedMeshFrom( bigGrass, grassMaterials.bigGrass );
+		waterGrass = makeInstancedMeshFrom( waterGrass, grassMaterials.waterGrass );
 
 		//
 
