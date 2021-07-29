@@ -22,9 +22,9 @@ const water = new THREE.Mesh(
 
 // SKY
 
-const CLOUDS_NUMBER = 150;
+const CLOUDS_NUMBER = 170;
 const CLOUD_MIN_SIZE = 0.1;
-const CLOUD_MAX_SIZE = 0.3;
+const CLOUD_MAX_SIZE = 0.45;
 const CLOUDS_SPEED = 0.0005;
 const cloudDummies = [];
 const cloudVelocity = 0.5;
