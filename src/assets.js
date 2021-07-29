@@ -14,7 +14,7 @@ waterGeometry.translate( 0, -3, -100 );
 
 const water = new THREE.Mesh(
 	waterGeometry,
-	waterMaterial //new THREE.MeshNormalMaterial({ wireframe: true })
+	waterMaterial
 );
 
 //
@@ -32,6 +32,9 @@ export default new Promise( (resolve) => {
 		const grass = glb.scene.getObjectByName( 'grass' );
 		const bigGrass = glb.scene.getObjectByName( 'big_grass' );
 		const waterGrass = glb.scene.getObjectByName( 'water_grass' );
+
+		windmill.traverse( child => child.castShadow = true );
+		ground.traverse( child => child.receiveShadow = true );
 
 		const assets = {
 			animations,

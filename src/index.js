@@ -4,6 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
+import ShadowedLight from './ShadowedLight.js';
+
 import nx from '../assets/cubemap/nx.jpg';
 import ny from '../assets/cubemap/ny.jpg';
 import nz from '../assets/cubemap/nz.jpg';
@@ -22,12 +24,14 @@ const HEIGHT = window.innerHeight;
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera( 70, WIDTH/HEIGHT, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera( 50, WIDTH/HEIGHT, 0.1, 1000 );
 camera.position.set( 0, 50, 50 );
 camera.lookAt( 0, 0, 0 );
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize( WIDTH, HEIGHT );
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 document.body.append( renderer.domElement );
 
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -43,10 +47,20 @@ window.addEventListener( 'resize', () => {
 // lights
 
 const light = new THREE.AmbientLight( 0x404040, 1 );
-scene.add( light );
 
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-scene.add( directionalLight );
+const dirLight = ShadowedLight({
+	x: 70,
+	y: 70,
+	z: -100,
+	width: 250,
+	near: 50,
+	far: 250,
+	intensity: 0.5,
+	radius: 10,
+	useHelpers: true
+});
+
+scene.add( light, dirLight, dirLight.helpers );
 
 // assets
 
