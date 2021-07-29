@@ -16,7 +16,7 @@ import pz from '../assets/cubemap/pz.jpg';
 
 //
 
-let blades;
+let blades, sky;
 
 // scene basic setup
 
@@ -26,7 +26,7 @@ const HEIGHT = window.innerHeight;
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog( 0xffffff, 50, 600 );
 
-const camera = new THREE.PerspectiveCamera( 50, WIDTH/HEIGHT, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera( 50, WIDTH/HEIGHT, 0.1, 5000 );
 camera.position.set( 0, 50, 50 );
 camera.lookAt( 0, 0, 0 );
 
@@ -72,12 +72,14 @@ assets.then( a => {
 		a.windmill,
 		a.ground,
 		a.grass,
-		a.water,
 		a.bigGrass,
-		a.waterGrass
+		a.waterGrass,
+		a.water,
+		a.sky
 	);
 
 	blades = a.blades;
+	sky = a.sky;
 
 } );
 
@@ -99,6 +101,10 @@ function loop() {
 function animate() {
 
 	if ( blades ) blades.rotation.z += 0.003;
+
+	if ( sky ) sky.userData.update();
+
+
 
 	const t = clock.getElapsedTime();
 
