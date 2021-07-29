@@ -56,7 +56,9 @@ assets.then( a => {
 		a.windmill,
 		a.ground,
 		a.grass,
-		a.water
+		a.water,
+		a.bigGrass,
+		a.waterGrass
 	);
 
 	blades = a.blades;
@@ -75,6 +77,7 @@ function loop() {
 	animate();
 	requestAnimationFrame( loop );
 	renderer.render( scene, camera );
+	// console.log( renderer.info.render )
 }
 
 function animate() {
