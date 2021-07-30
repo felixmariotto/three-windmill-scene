@@ -34,6 +34,8 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize( WIDTH, HEIGHT );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.gammaOutput = true;
+renderer.gammaFactor = 2.2;
 document.body.append( renderer.domElement );
 
 const controls = new OrbitControls( camera, renderer.domElement );
