@@ -1,6 +1,12 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+import { BrightnessContrastShader } from 'three/examples/jsm/shaders/BrightnessContrastShader.js';
+import postShader from './postShader.js';
 
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
@@ -30,22 +36,41 @@ const camera = new THREE.PerspectiveCamera( 50, WIDTH/HEIGHT, 0.1, 5000 );
 camera.position.set( 0, 50, 50 );
 camera.lookAt( 0, 0, 0 );
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer();
 renderer.setSize( WIDTH, HEIGHT );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
-renderer.gammaOutput = true;
-renderer.gammaFactor = 2.2;
+renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.append( renderer.domElement );
 
 const controls = new OrbitControls( camera, renderer.domElement );
 
 const clock = new THREE.Clock();
 
+// postprocessing
+
+const composer = new EffectComposer( renderer );
+composer.addPass( new RenderPass( scene, camera ) );
+
+const aaEffect = new ShaderPass( FXAAShader );
+composer.addPass( aaEffect );
+
+const brigthContrastEffect = new ShaderPass( BrightnessContrastShader );
+brigthContrastEffect.uniforms[ 'brightness' ].value = -0.1;
+brigthContrastEffect.uniforms[ 'contrast' ].value = -0.1;
+composer.addPass( brigthContrastEffect );
+
+const colorAverageEffect = new ShaderPass( postShader );
+colorAverageEffect.uniforms[ 'amount' ].value = 0.7;
+composer.addPass( colorAverageEffect );
+
+// resizing
+
 window.addEventListener( 'resize', () => {
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 	renderer.setSize( window.innerWidth, window.innerHeight );
+	composer.setSize( window.innerWidth, window.innerHeight );
 } );
 
 // lights
@@ -96,7 +121,8 @@ loop();
 function loop() {
 	animate();
 	requestAnimationFrame( loop );
-	renderer.render( scene, camera );
+	composer.render();
+	// renderer.render( scene, camera );
 	// console.log( renderer.info.render )
 }
 
