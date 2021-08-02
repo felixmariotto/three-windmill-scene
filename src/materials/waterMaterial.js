@@ -55,11 +55,13 @@ const fragmentShader = `
 		// WATER COLOURING DEPENDING ON NORMAL
 
 		float t = time * 0.3;
-		vec3 waterNormal1 = texture2D( water_texture1, vUv + t * 0.02 ).xyz;
-		vec3 waterNormal2 = texture2D( water_texture2, vUv + vec2( t * 0.02, t * 0.01 ) ).xyz;
-		vec3 mixVal = texture2D( water_texture2, vUv + t * 0.05 ).xyz;
-		vec3 waterNormal = mix( waterNormal1, waterNormal2, dot( mixVal, vec3( 0, 1.0, 0 ) ) );
-		
+
+		vec3 waterNormal1 = texture2D( water_texture1, 3.0 * vUv + vec2( t * -0.03, t * 0.06 ) ).xyz;
+		vec3 waterNormal2 = texture2D( water_texture2, 3.0 * vUv + vec2( t * 0.04, t * 0.03 ) ).xyz;
+		waterNormal1 = normalize( waterNormal1 );
+		waterNormal2 = normalize( waterNormal2 );
+		vec3 waterNormal = normalize( waterNormal1 * waterNormal2 );
+
 		// FOG
 
 		float minFog = 350.0;
@@ -68,7 +70,18 @@ const fragmentShader = `
 
 		//
 
-		gl_FragColor = vec4( waterNormal, 1.0 - fogIntensity );
+		float azimuth = 1.0 - abs( dot( normalize( waterNormal ), vec3( 0, 0, -1.0 ) ) );
+		azimuth += 0.15 * min( 1.0, length( vPos.xyz ) / 500.0 );
+		float stp = smoothstep( 0.06, 0.08, azimuth );
+		stp = 1.0 - stp;
+
+		vec3 waterColor = vec3( 0, 0, 1.0 );
+		vec3 reflectedColor = vec3( 0, 1.0, 0.0 );
+		
+		vec3 color = reflectedColor * stp + waterColor * ( 1.0 - stp );
+
+		gl_FragColor = vec4( color, 1.0 - fogIntensity );
+
 	}
 `;
 
