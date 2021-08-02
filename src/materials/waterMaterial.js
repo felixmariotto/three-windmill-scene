@@ -64,12 +64,7 @@ const fragmentShader = `
 
 		//
 
-		float azimuth = 1.0 - abs( dot( waterNormal, vec3( 0, 0, -1.0 ) ) );
-		azimuth += 0.15 * min( 1.0, length( vPos.xyz ) / 500.0 );
-		float stp = smoothstep( 0.06, 0.08, azimuth );
-		stp = 1.0 - stp;
-
-		vec3 color = vec3( waterNormal.y, stp, 1.0 - stp );
+		vec3 color = vec3( waterNormal.y, 0, 0 );
 
 		gl_FragColor = vec4( color, 1.0 );
 

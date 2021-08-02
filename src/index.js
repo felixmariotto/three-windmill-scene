@@ -48,8 +48,8 @@ document.body.append( renderer.domElement );
 const waterRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 const reflectionRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 
-const renderTargetHelper = RenderTargetHelper( renderer, waterRenderTarget );
-document.body.append( renderTargetHelper );
+// const renderTargetHelper = RenderTargetHelper( renderer, waterRenderTarget );
+// document.body.append( renderTargetHelper );
 
 const clock = new THREE.Clock();
 
@@ -150,6 +150,8 @@ function loop() {
 
 	animate();
 
+	waterSSREffect.uniforms[ 'camHeight' ].value = ( camera.position.y - 5 ) / 8.8;
+
 	//
  
 	camera.layers.disable( 1 );
@@ -166,7 +168,7 @@ function loop() {
 
 	//
 
-	renderTargetHelper.update();
+	// renderTargetHelper.update();
 
 	renderer.setRenderTarget();
 	renderer.clear();

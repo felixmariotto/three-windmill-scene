@@ -4,7 +4,8 @@ const shader = {
 	uniforms: {
 		'tDiffuse': { value: null },
 		'tWater': { value: null },
-		'tReflection': { value: null }
+		'tReflection': { value: null },
+		'camHeight': { value: 0 }
 	},
 
 	vertexShader: `
@@ -22,6 +23,7 @@ const shader = {
 		uniform sampler2D tDiffuse;
 		uniform sampler2D tWater;
 		uniform sampler2D tReflection;
+		uniform float camHeight;
 
 		varying vec2 vUv;
 
@@ -30,7 +32,7 @@ const shader = {
 			vec4 sceneColor = texture2D( tDiffuse, vUv );
 			vec4 waterValue = texture2D( tWater, vUv );
 
-			if ( length( waterValue.xyz ) > 0.5 ) {
+			if ( length( waterValue.x ) > 0.01 ) {
 
 				float reflectionCorrection = 0.05;
 
@@ -39,16 +41,22 @@ const shader = {
 				vec3 reflectionColor = texture2D( tReflection, uv ).xyz;
 
 				// darker reflection with proximity
-				float waterFragT = 1.0 - ( vUv.y / 0.35 );
+				float horizonHeight = 0.4 - camHeight * 0.15;
+				float waterFragT = 1.0 - ( vUv.y / horizonHeight );
 				reflectionColor.x -= 0.6 * waterFragT;
 				reflectionColor.y -= 0.5 * waterFragT;
 				reflectionColor.z -= 0.55 * waterFragT;
 
 				// reflection power
-				float rp = ( waterValue.x * 2.0 + 0.5 ) * ( 0.3 + 0.7 * ( 1.0 - waterFragT ) );
-				reflectionColor = mix( vec3( 48.0/255.0, 43.0/255.0, 34.0/255.0 ), reflectionColor, rp );
+				vec3 darkColor = vec3( 48.0/255.0, 43.0/255.0, 34.0/255.0 ) * sceneColor.xyz;
+				float reflectionPower = ( waterValue.x * 2.0 + 0.5 ) * ( 0.3 + 0.7 * ( 1.0 - waterFragT ) );
+				reflectionColor = mix( darkColor, reflectionColor, reflectionPower );
+
+				float blendT = max( 0.0, min( 1.0, ( vUv.y - horizonHeight + 0.01 ) * 35.0 ) );
+				vec3 blendedColor = mix( reflectionColor, sceneColor.xyz, vUv.y );
 
 				sceneColor = vec4( reflectionColor, 1.0 );
+				// sceneColor = vec4( vec3( blendT ), 1.0 );
 
 			}
 
