@@ -42,7 +42,7 @@ camera.userData.update = function update() {
 		targetPos.x += mouse.x * 10;
 		targetPos.y += mouse.y * 5;
 
-		camera.position.lerp( targetPos, 0.03 );
+		camera.position.lerp( targetPos, 0.02 );
 
 		// point the camera towards target
 
@@ -50,7 +50,7 @@ camera.userData.update = function update() {
 		targetDir.x += mouse.x * 0.2;
 		targetDir.y += mouse.y * 0.1;
 
-		lastDir.lerp( targetDir, 0.03 );
+		lastDir.lerp( targetDir, 0.02 );
 
 		_vec
 		.copy( camera.position )

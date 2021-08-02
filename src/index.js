@@ -11,7 +11,6 @@ import RenderTargetHelper from 'three-rt-helper';
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
 import grassMaterials from './materials/grassMaterials.js';
-import ShadowedLight from './ShadowedLight.js';
 import camera from './camera.js';
 import postprosColorAverage from './postprosColorAverage.js';
 import postprosWaterSSR from './postprosWaterSSR.js';
@@ -40,8 +39,6 @@ waterScene.background = new THREE.Color( 'black' );
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( WIDTH, HEIGHT );
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.append( renderer.domElement );
 
@@ -63,19 +60,19 @@ waterSSREffect.uniforms[ 'tWater' ].value = waterRenderTarget.texture;
 waterSSREffect.uniforms[ 'tReflection' ].value = reflectionRenderTarget.texture;
 composer.addPass( waterSSREffect );
 
+const colorAverageEffect = new ShaderPass( postprosColorAverage );
+colorAverageEffect.uniforms[ 'amount' ].value = 0.7;
+composer.addPass( colorAverageEffect );
+
 /*
 const brigthContrastEffect = new ShaderPass( BrightnessContrastShader );
 brigthContrastEffect.uniforms[ 'brightness' ].value = -0.1;
 brigthContrastEffect.uniforms[ 'contrast' ].value = -0.1;
 composer.addPass( brigthContrastEffect );
-
-const colorAverageEffect = new ShaderPass( postprosColorAverage );
-colorAverageEffect.uniforms[ 'amount' ].value = 0.7;
-composer.addPass( colorAverageEffect );
+*/
 
 const aaEffect = new ShaderPass( FXAAShader );
 composer.addPass( aaEffect );
-*/
 
 // resizing
 
@@ -94,21 +91,12 @@ window.addEventListener( 'resize', () => {
 
 // lights
 
-const light = new THREE.AmbientLight( 0x404040, 1 );
+const light = new THREE.AmbientLight( 0xffffff, 0.7 );
 
-const dirLight = ShadowedLight({
-	x: 70,
-	y: 70,
-	z: -100,
-	width: 250,
-	near: 50,
-	far: 250,
-	intensity: 0.5,
-	radius: 10,
-	// useHelpers: true
-});
+const dirLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+dirLight.position.set( 70, 70, -100 );
 
-scene.add( light, dirLight, dirLight.helpers );
+scene.add( light, dirLight );
 
 // assets
 
