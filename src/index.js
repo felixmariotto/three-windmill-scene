@@ -143,6 +143,8 @@ function loop() {
 
 	animate();
 
+	//
+
 	renderer.setRenderTarget( renderTarget );
 	renderer.clear();
 	renderer.render( waterScene, camera );
@@ -155,6 +157,8 @@ function loop() {
 	renderer.clear();
 
 	composer.render();
+
+	//
 
 	// renderer.render( scene, camera );
 	// console.log( renderer.info.render )
