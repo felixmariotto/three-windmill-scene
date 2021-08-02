@@ -13,6 +13,7 @@ const textureLoader = new THREE.TextureLoader();
 function makeGrassMaterial( textureURL, isReflection ) {
 
 	const vertexShader = `
+
 		varying vec2 vUv;
 		uniform float time;
 
@@ -27,20 +28,18 @@ function makeGrassMaterial( textureURL, isReflection ) {
 
 			vec4 mvPosition = vec4( position, 1.0 );
 			#ifdef USE_INSTANCING
-			mvPosition = instanceMatrix * mvPosition;
+				mvPosition = instanceMatrix * mvPosition;
 			#endif
 
 			// DISPLACEMENT
 
-			float noise = smoothNoise( mvPosition.xz * 0.1 + vec2( 0., t ) );
-			noise = pow(noise * 0.5 + 0.5, 2.) * 2.;
+			float noise = smoothNoise( mvPosition.xz * 0.1 + vec2( 0.0, t ) );
+			noise = pow( noise * 0.5 + 0.5, 2.0 ) * 2.0;
 
 			// here the displacement is made stronger on the blades tips.
-			float dispPower = 1. - cos( ( 1.0 - uv.y ) * 3.1416 * 0.5 );
-
+			float dispPower = 1.0 - cos( ( 1.0 - uv.y ) * 3.1416 * 0.5 );
 			float displacement = noise * ( 0.3 * dispPower );
-			// mvPosition.z -= displacement * 5.0;
-			mvPosition += vec4( -3.0, 0, 3.0, 0.0 ) * displacement;
+			mvPosition += vec4( -5.0, 0, -2.0, 0.0 ) * displacement;
 
 			//
 
@@ -51,8 +50,8 @@ function makeGrassMaterial( textureURL, isReflection ) {
 	`;
 
 	const fragmentShader = `
-		varying vec2 vUv;
 
+		varying vec2 vUv;
 		uniform sampler2D map;
 
 		void main() {
