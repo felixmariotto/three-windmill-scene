@@ -1,17 +1,17 @@
 
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { BrightnessContrastShader } from 'three/examples/jsm/shaders/BrightnessContrastShader.js';
-import postShader from './postShader.js';
+import postprosColorAverage from './postprosColorAverage.js';
 
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
 import grassMaterials from './materials/grassMaterials.js';
 import ShadowedLight from './ShadowedLight.js';
+import camera from './camera.js';
 
 import nx from '../assets/cubemap/nx.jpg';
 import ny from '../assets/cubemap/ny.jpg';
@@ -32,18 +32,12 @@ const HEIGHT = window.innerHeight;
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog( 0xffffff, 50, 600 );
 
-const camera = new THREE.PerspectiveCamera( 50, WIDTH/HEIGHT, 0.1, 5000 );
-camera.position.set( 0, 50, 50 );
-camera.lookAt( 0, 0, 0 );
-
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( WIDTH, HEIGHT );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.append( renderer.domElement );
-
-const controls = new OrbitControls( camera, renderer.domElement );
 
 const clock = new THREE.Clock();
 
@@ -60,7 +54,7 @@ brigthContrastEffect.uniforms[ 'brightness' ].value = -0.1;
 brigthContrastEffect.uniforms[ 'contrast' ].value = -0.1;
 composer.addPass( brigthContrastEffect );
 
-const colorAverageEffect = new ShaderPass( postShader );
+const colorAverageEffect = new ShaderPass( postprosColorAverage );
 colorAverageEffect.uniforms[ 'amount' ].value = 0.7;
 composer.addPass( colorAverageEffect );
 
@@ -121,6 +115,7 @@ loop();
 function loop() {
 	animate();
 	requestAnimationFrame( loop );
+	camera.userData.update();
 	composer.render();
 	// renderer.render( scene, camera );
 	// console.log( renderer.info.render )
