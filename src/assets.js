@@ -111,6 +111,13 @@ export default new Promise( (resolve) => {
 		bigGrass = makeInstancedMeshFrom( bigGrass, grassMaterials.bigGrass );
 		waterGrass = makeInstancedMeshFrom( waterGrass, grassMaterials.waterGrass );
 
+		const grassReflection = grass.clone();
+		const bigGrassReflection = bigGrass.clone();
+		const waterGrassReflection = waterGrass.clone();
+		grassReflection.material = grassMaterials.grassReflection;
+		bigGrassReflection.material = grassMaterials.bigGrassReflection;
+		waterGrassReflection.material = grassMaterials.waterGrassReflection;
+
 		//
 
 		const assets = {
@@ -121,6 +128,9 @@ export default new Promise( (resolve) => {
 			grass,
 			bigGrass,
 			waterGrass,
+			grassReflection,
+			bigGrassReflection,
+			waterGrassReflection,
 			// not from the GLB file
 			water,
 			sky

@@ -10,7 +10,7 @@ import waterGrassTextureURL from '../../assets/water_grass.png';
 
 const textureLoader = new THREE.TextureLoader();
 
-function makeGrassMaterial( textureURL ) {
+function makeGrassMaterial( textureURL, isReflection ) {
 
 	const vertexShader = `
 		varying vec2 vUv;
@@ -61,7 +61,12 @@ function makeGrassMaterial( textureURL ) {
 			uv.y = 1.0 - uv.y;
 			vec4 sampledC = texture2D( map, uv );
 
-			gl_FragColor = sampledC;
+			${
+				isReflection ?
+					'gl_FragColor = vec4( vec3( 0 ), sampledC.a );' :
+					'gl_FragColor = sampledC;'
+			}
+			
 		}
 	`;
 
@@ -93,10 +98,17 @@ const grass = makeGrassMaterial( grassTextureURL );
 const bigGrass = makeGrassMaterial( bigGrassTextureURL );
 const waterGrass = makeGrassMaterial( waterGrassTextureURL );
 
+const grassReflection = makeGrassMaterial( grassTextureURL, true );
+const bigGrassReflection = makeGrassMaterial( bigGrassTextureURL, true );
+const waterGrassReflection = makeGrassMaterial( waterGrassTextureURL, true );
+
 //
 
 export default {
 	grass,
 	bigGrass,
-	waterGrass
+	waterGrass,
+	grassReflection,
+	bigGrassReflection,
+	waterGrassReflection
 }

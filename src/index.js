@@ -48,7 +48,7 @@ document.body.append( renderer.domElement );
 const waterRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 const reflectionRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 
-const renderTargetHelper = RenderTargetHelper( renderer, reflectionRenderTarget );
+const renderTargetHelper = RenderTargetHelper( renderer, waterRenderTarget );
 document.body.append( renderTargetHelper );
 
 const clock = new THREE.Clock();
@@ -127,6 +127,9 @@ assets.then( a => {
 
 	waterScene.add(
 		a.water,
+		a.grassReflection,
+		a.bigGrassReflection,
+		a.waterGrassReflection,
 		groundClone
 	);
 
