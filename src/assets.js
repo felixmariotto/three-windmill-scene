@@ -98,6 +98,9 @@ export default new Promise( (resolve) => {
 
 	new GLTFLoader().load( landscapeURL, (glb) => {
 
+		// console.log( glb )
+		// debugger
+
 		const animations = glb.animations;
 		const windmill = glb.scene.getObjectByName( 'windmill' );
 		const blades = glb.scene.getObjectByName( 'blades' );

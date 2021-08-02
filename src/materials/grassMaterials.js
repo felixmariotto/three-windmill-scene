@@ -61,6 +61,8 @@ function makeGrassMaterial( textureURL, isReflection ) {
 			uv.y = 1.0 - uv.y;
 			vec4 sampledC = texture2D( map, uv );
 
+			if ( sampledC.a < 0.1 ) discard;
+
 			${
 				isReflection ?
 					'gl_FragColor = vec4( vec3( 0 ), sampledC.a );' :
@@ -79,8 +81,7 @@ function makeGrassMaterial( textureURL, isReflection ) {
 		vertexShader,
 		fragmentShader,
 		uniforms,
-		side: THREE.DoubleSide,
-		transparent: true
+		side: THREE.DoubleSide
 	} );
 
 	material.userData.update = function ( elapsedTime ) {
