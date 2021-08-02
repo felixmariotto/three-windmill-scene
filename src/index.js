@@ -45,9 +45,10 @@ renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.append( renderer.domElement );
 
-const renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+const waterRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+const reflectionRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 
-const renderTargetHelper = RenderTargetHelper( renderer, renderTarget );
+const renderTargetHelper = RenderTargetHelper( renderer, reflectionRenderTarget );
 document.body.append( renderTargetHelper );
 
 const clock = new THREE.Clock();
@@ -58,7 +59,8 @@ const composer = new EffectComposer( renderer );
 composer.addPass( new RenderPass( scene, camera ) );
 
 const waterSSREffect = new ShaderPass( postprosWaterSSR );
-waterSSREffect.uniforms[ 'tWater' ].value = renderTarget.texture;
+waterSSREffect.uniforms[ 'tWater' ].value = waterRenderTarget.texture;
+waterSSREffect.uniforms[ 'tReflection' ].value = reflectionRenderTarget.texture;
 composer.addPass( waterSSREffect );
 
 /*
@@ -84,7 +86,8 @@ window.addEventListener( 'resize', () => {
 	camera.updateProjectionMatrix();
 	renderer.setSize( WIDTH, HEIGHT );
 	composer.setSize( WIDTH, HEIGHT );
-	renderTarget.setSize( WIDTH, HEIGHT );
+	waterRenderTarget.setSize( WIDTH, HEIGHT );
+	reflectionRenderTarget.setSize( WIDTH, HEIGHT );
 } );
 
 // lights
@@ -118,6 +121,7 @@ assets.then( a => {
 		a.sky
 	);
 
+	a.ground.layers.set( 1 );
 	const groundClone = a.ground.clone();
 	groundClone.material = new THREE.MeshBasicMaterial({ color: 'black' });
 
@@ -144,14 +148,22 @@ function loop() {
 	animate();
 
 	//
+ 
+	camera.layers.disable( 1 );
+	renderer.setRenderTarget( reflectionRenderTarget );
+	renderer.clear();
+	renderer.render( scene, camera.userData.reflectionCamera );
 
-	renderer.setRenderTarget( renderTarget );
+	//
+
+	camera.layers.enable( 1 );
+	renderer.setRenderTarget( waterRenderTarget );
 	renderer.clear();
 	renderer.render( waterScene, camera );
 
-	renderTargetHelper.update();
-
 	//
+
+	renderTargetHelper.update();
 
 	renderer.setRenderTarget();
 	renderer.clear();

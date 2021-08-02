@@ -3,7 +3,8 @@ const shader = {
 
 	uniforms: {
 		'tDiffuse': { value: null },
-		'tWater': { value: null }
+		'tWater': { value: null },
+		'tReflection': { value: null }
 	},
 
 	vertexShader: `
@@ -20,6 +21,7 @@ const shader = {
 
 		uniform sampler2D tDiffuse;
 		uniform sampler2D tWater;
+		uniform sampler2D tReflection;
 
 		varying vec2 vUv;
 
@@ -30,9 +32,11 @@ const shader = {
 
 			if ( length( waterValue.xyz ) > 0.5 ) {
 
+				float reflectionCorrection = 0.05;
+
 				// get scene reflected pixel
-				vec2 uv = vec2( vUv.x, ( 0.7 - vUv.y ) + waterValue.x * 0.25 );
-				vec3 reflectionColor = texture2D( tDiffuse, uv ).xyz;
+				vec2 uv = vec2( vUv.x, ( 1.0 + reflectionCorrection - vUv.y ) - waterValue.x * 0.25 );
+				vec3 reflectionColor = texture2D( tReflection, uv ).xyz;
 
 				// darker reflection with proximity
 				float waterFragT = 1.0 - ( vUv.y / 0.35 );
