@@ -84,6 +84,8 @@ window.addEventListener( 'resize', () => {
 	const HEIGHT = window.innerHeight;
 	camera.aspect = WIDTH / HEIGHT;
 	camera.updateProjectionMatrix();
+	camera.userData.reflectionCamera.aspect = WIDTH / HEIGHT;
+	camera.userData.reflectionCamera.updateProjectionMatrix();
 	renderer.setSize( WIDTH, HEIGHT );
 	composer.setSize( WIDTH, HEIGHT );
 	waterRenderTarget.setSize( WIDTH, HEIGHT );
