@@ -5,13 +5,16 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { BrightnessContrastShader } from 'three/examples/jsm/shaders/BrightnessContrastShader.js';
-import postprosColorAverage from './postprosColorAverage.js';
+
+import RenderTargetHelper from 'three-rt-helper';
 
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
 import grassMaterials from './materials/grassMaterials.js';
 import ShadowedLight from './ShadowedLight.js';
 import camera from './camera.js';
+import postprosColorAverage from './postprosColorAverage.js';
+import postprosWaterSSR from './postprosWaterSSR.js';
 
 import nx from '../assets/cubemap/nx.jpg';
 import ny from '../assets/cubemap/ny.jpg';
@@ -32,12 +35,20 @@ const HEIGHT = window.innerHeight;
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog( 0xffffff, 50, 600 );
 
+const waterScene = new THREE.Scene();
+waterScene.background = new THREE.Color( 'black' );
+
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( WIDTH, HEIGHT );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.append( renderer.domElement );
+
+const renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+
+const renderTargetHelper = RenderTargetHelper( renderer, renderTarget );
+document.body.append( renderTargetHelper );
 
 const clock = new THREE.Clock();
 
@@ -46,9 +57,11 @@ const clock = new THREE.Clock();
 const composer = new EffectComposer( renderer );
 composer.addPass( new RenderPass( scene, camera ) );
 
-const aaEffect = new ShaderPass( FXAAShader );
-composer.addPass( aaEffect );
+const waterSSREffect = new ShaderPass( postprosWaterSSR );
+waterSSREffect.uniforms[ 'tWater' ].value = renderTarget.texture;
+composer.addPass( waterSSREffect );
 
+/*
 const brigthContrastEffect = new ShaderPass( BrightnessContrastShader );
 brigthContrastEffect.uniforms[ 'brightness' ].value = -0.1;
 brigthContrastEffect.uniforms[ 'contrast' ].value = -0.1;
@@ -58,13 +71,20 @@ const colorAverageEffect = new ShaderPass( postprosColorAverage );
 colorAverageEffect.uniforms[ 'amount' ].value = 0.7;
 composer.addPass( colorAverageEffect );
 
+const aaEffect = new ShaderPass( FXAAShader );
+composer.addPass( aaEffect );
+*/
+
 // resizing
 
 window.addEventListener( 'resize', () => {
-	camera.aspect = window.innerWidth / window.innerHeight;
+	const WIDTH = window.innerWidth;
+	const HEIGHT = window.innerHeight;
+	camera.aspect = WIDTH / HEIGHT;
 	camera.updateProjectionMatrix();
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	composer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setSize( WIDTH, HEIGHT );
+	composer.setSize( WIDTH, HEIGHT );
+	renderTarget.setSize( WIDTH, HEIGHT );
 } );
 
 // lights
@@ -95,8 +115,15 @@ assets.then( a => {
 		a.grass,
 		a.bigGrass,
 		a.waterGrass,
-		a.water,
 		a.sky
+	);
+
+	const groundClone = a.ground.clone();
+	groundClone.material = new THREE.MeshBasicMaterial({ color: 'black' });
+
+	waterScene.add(
+		a.water,
+		groundClone
 	);
 
 	blades = a.blades;
@@ -113,12 +140,27 @@ scene.background = textureCube;
 loop();
 
 function loop() {
+
 	animate();
-	requestAnimationFrame( loop );
-	camera.userData.update();
+
+	renderer.setRenderTarget( renderTarget );
+	renderer.clear();
+	renderer.render( waterScene, camera );
+
+	renderTargetHelper.update();
+
+	//
+
+	renderer.setRenderTarget();
+	renderer.clear();
+
 	composer.render();
+
 	// renderer.render( scene, camera );
 	// console.log( renderer.info.render )
+
+	requestAnimationFrame( loop );
+
 }
 
 function animate() {
@@ -132,5 +174,7 @@ function animate() {
 	grassMaterials.grass.userData.update( t );
 	grassMaterials.bigGrass.userData.update( t );
 	grassMaterials.waterGrass.userData.update( t );
+
+	camera.userData.update();
 
 }

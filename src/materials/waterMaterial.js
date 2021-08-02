@@ -62,25 +62,16 @@ const fragmentShader = `
 		waterNormal2 = normalize( waterNormal2 );
 		vec3 waterNormal = normalize( waterNormal1 * waterNormal2 );
 
-		// FOG
-
-		float minFog = 350.0;
-		float maxFog = 500.0;
-		float fogIntensity = max( 0.0, length( vPos.xyz ) - minFog ) / maxFog;
-
 		//
 
-		float azimuth = 1.0 - abs( dot( normalize( waterNormal ), vec3( 0, 0, -1.0 ) ) );
+		float azimuth = 1.0 - abs( dot( waterNormal, vec3( 0, 0, -1.0 ) ) );
 		azimuth += 0.15 * min( 1.0, length( vPos.xyz ) / 500.0 );
 		float stp = smoothstep( 0.06, 0.08, azimuth );
 		stp = 1.0 - stp;
 
-		vec3 waterColor = vec3( 0, 0, 1.0 );
-		vec3 reflectedColor = vec3( 0, 1.0, 0.0 );
-		
-		vec3 color = reflectedColor * stp + waterColor * ( 1.0 - stp );
+		vec3 color = vec3( waterNormal.y, stp, 1.0 - stp );
 
-		gl_FragColor = vec4( color, 1.0 - fogIntensity );
+		gl_FragColor = vec4( color, 1.0 );
 
 	}
 `;

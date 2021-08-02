@@ -37,7 +37,7 @@ camera.userData.update = function update() {
 
 		targetPos.set( 0, 10, 100 );
 		targetPos.x += mouse.x * 10;
-		targetPos.y += mouse.y * 5;
+		targetPos.y += mouse.y * 1;
 
 		camera.position.lerp( targetPos, 0.08 );
 
@@ -45,7 +45,7 @@ camera.userData.update = function update() {
 
 		targetDir.set( 0, 0.2, -1 );
 		targetDir.x += mouse.x * 0.2;
-		targetDir.y += mouse.y * 0.1;
+		targetDir.y += mouse.y * 0.01;
 
 		lastDir.lerp( targetDir, 0.03 );
 
