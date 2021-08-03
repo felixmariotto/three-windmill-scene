@@ -47,10 +47,10 @@ camera.userData.update = function update( dtRatio, dt ) {
 		if ( idleTimer > 2 ) {
 			const length = mouse.length();
 			if ( !length ) mouse.set( 0.001, 0.001 );
-			const targetLength = length + ( 1 - length ) * 0.01;
+			const targetLength = length + ( 1 - length ) * 0.01 * dtRatio;
 			mouse.setLength( targetLength );
 
-			mouse.rotateAround( _zeroVec, 0.0015 );
+			mouse.rotateAround( _zeroVec, 0.0015 * dtRatio );
 		}
 
 		targetPos.set( 0, 10, 100 );

@@ -171,7 +171,7 @@ function animate() {
 
 	const t = clock.getElapsedTime();
 	const dt = dtClock.getDelta();
-	const dtRatio = dt / ( 1 / 60 );
+	const dtRatio = Math.min( 7, dt / ( 1 / 60 ) );
 
 	if ( blades ) blades.rotation.z += 0.003 * dtRatio;
 	if ( sky ) sky.userData.update( dtRatio );
