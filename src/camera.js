@@ -32,10 +32,18 @@ if ( USE_CONTROLS ) {
 // animation
 
 window.addEventListener( 'pointermove', (e) => {
-	mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
-	idleTimer = 0;
+	handleMove( e.clientX, e.clientY );
 } );
+
+window.addEventListener( 'touchmove', (e) => {
+	handleMove( e.touches[0].clientX, e.touches[0].clientY );
+} );
+
+function handleMove( x, y ) {
+	mouse.x = ( x / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( y / window.innerHeight ) * 2 + 1;
+	idleTimer = 0;
+}
 
 camera.userData.update = function update( dtRatio, dt ) {
 
