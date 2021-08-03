@@ -91,12 +91,13 @@ window.addEventListener( 'resize', () => {
 
 // lights
 
-const light = new THREE.AmbientLight( 0xffffff, 0.7 );
+const light1 = new THREE.DirectionalLight( 0xffffff, 1.1 );
+light1.position.set( 1, 1, -1 );
 
-const dirLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-dirLight.position.set( 70, 70, -100 );
+const light2 = new THREE.DirectionalLight( 0xffffff, 0.4 );
+light2.position.set( -0.4, -0.1, 0.5 );
 
-scene.add( light, dirLight );
+scene.add( light1, light2 );
 
 // assets
 
@@ -131,6 +132,7 @@ assets.then( a => {
 const textureCube = new THREE.CubeTextureLoader().load( [ px, nx, py, ny, pz, nz ] );
 
 scene.background = textureCube;
+scene.environment = textureCube;
 
 // animation loop
 
