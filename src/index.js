@@ -170,7 +170,8 @@ function loop() {
 function animate() {
 
 	const t = clock.getElapsedTime();
-	const dtRatio = dtClock.getDelta() / ( 1 / 60 );
+	const dt = dtClock.getDelta();
+	const dtRatio = dt / ( 1 / 60 );
 
 	if ( blades ) blades.rotation.z += 0.003 * dtRatio;
 	if ( sky ) sky.userData.update( dtRatio );
@@ -180,6 +181,6 @@ function animate() {
 	grassMaterials.bigGrass.userData.update( t );
 	grassMaterials.waterGrass.userData.update( t );
 
-	camera.userData.update( dtRatio );
+	camera.userData.update( dtRatio, dt );
 
 }

@@ -11,11 +11,14 @@ const targetPos = new THREE.Vector3();
 const targetDir = new THREE.Vector3( 0, 0.25, -1 );
 const lastDir = new THREE.Vector3( 0, 0.25, -1 );
 const _vec = new THREE.Vector3();
+const _zeroVec = new THREE.Vector3();
 
 const aspect = window.innerWidth / window.innerHeight;
 const camera = new THREE.PerspectiveCamera( 65, aspect, 0.1, 5000 );
 camera.position.set( 0, 10, 100 );
 camera.userData.reflectionCamera = camera.clone();
+
+let idleTimer = 0; // time without use interaction in seconds.
 
 if ( USE_CONTROLS ) {
 
@@ -31,11 +34,24 @@ if ( USE_CONTROLS ) {
 window.addEventListener( 'pointermove', (e) => {
 	mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+	idleTimer = 0;
 } );
 
-camera.userData.update = function update( dtRatio ) {
+camera.userData.update = function update( dtRatio, dt ) {
 
 	if ( !USE_CONTROLS ) {
+
+		idleTimer += dt;
+
+		// automatically rotate the camera if the user does not interact
+		if ( idleTimer > 2 ) {
+			const length = mouse.length();
+			if ( !length ) mouse.set( 0.001, 0.001 );
+			const targetLength = length + ( 1 - length ) * 0.01;
+			mouse.setLength( targetLength );
+
+			mouse.rotateAround( _zeroVec, 0.0015 );
+		}
 
 		targetPos.set( 0, 10, 100 );
 		targetPos.x += mouse.x * 10;
