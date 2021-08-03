@@ -50,8 +50,8 @@ for ( let i=0 ; i<CLOUDS_NUMBER ; i++ ) {
 
 	dummy.scale.setScalar( CLOUD_MIN_SIZE + Math.random() * ( CLOUD_MAX_SIZE - CLOUD_MIN_SIZE ) );
 
-	dummy.userData.update = function update() {
-		spherical.theta += CLOUDS_SPEED * speed;
+	dummy.userData.update = function update( dtRatio ) {
+		spherical.theta += CLOUDS_SPEED * speed * dtRatio;
 		dummy.position.setFromSpherical( spherical );
 		dummy.lookAt( clouds.position );
 		dummy.updateMatrix();
@@ -65,8 +65,8 @@ sky.scale.setScalar( 2000 );
 
 sky.add( clouds );
 
-sky.userData.update = function update() {
-	cloudDummies.forEach( dummy => dummy.userData.update() );
+sky.userData.update = function update( dtRatio ) {
+	cloudDummies.forEach( dummy => dummy.userData.update( dtRatio ) );
 	clouds.instanceMatrix.needsUpdate = true;
 }
 

@@ -55,7 +55,6 @@ const shader = {
 				float blendT = max( 0.0, min( 1.0, ( vUv.y - horizonHeight - 0.006 ) * 85.0 ) );
 				vec3 blendedColor = mix( reflectionColor, sceneColor.xyz, blendT );
 
-
 				// sceneColor = vec4( reflectionColor, 1.0 );
 				// sceneColor = vec4( vec3(blendT), 1.0 );
 				sceneColor = vec4( blendedColor, 1.0 );

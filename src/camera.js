@@ -33,7 +33,7 @@ window.addEventListener( 'pointermove', (e) => {
 	mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
 } );
 
-camera.userData.update = function update() {
+camera.userData.update = function update( dtRatio ) {
 
 	if ( !USE_CONTROLS ) {
 
@@ -41,7 +41,7 @@ camera.userData.update = function update() {
 		targetPos.x += mouse.x * 10;
 		targetPos.y += mouse.y * 5;
 
-		camera.position.lerp( targetPos, 0.02 );
+		camera.position.lerp( targetPos, 0.02 * dtRatio );
 
 		// point the camera towards target
 
@@ -49,7 +49,7 @@ camera.userData.update = function update() {
 		targetDir.x += mouse.x * 0.2;
 		targetDir.y += mouse.y * 0.1;
 
-		lastDir.lerp( targetDir, 0.02 );
+		lastDir.lerp( targetDir, 0.02 * dtRatio );
 
 		_vec
 		.copy( camera.position )

@@ -46,6 +46,7 @@ const waterRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 const reflectionRenderTarget = new THREE.WebGLRenderTarget( WIDTH / 2, HEIGHT / 2 );
 
 const clock = new THREE.Clock();
+const dtClock = new THREE.Clock();
 
 const stats = new Stats();
 document.body.appendChild( stats.dom );
@@ -168,16 +169,17 @@ function loop() {
 
 function animate() {
 
-	if ( blades ) blades.rotation.z += 0.003;
-	if ( sky ) sky.userData.update();
-
 	const t = clock.getElapsedTime();
+	const dtRatio = dtClock.getDelta() / ( 1 / 60 );
+
+	if ( blades ) blades.rotation.z += 0.003 * dtRatio;
+	if ( sky ) sky.userData.update( dtRatio );
 
 	waterMaterial.userData.update( t );
 	grassMaterials.grass.userData.update( t );
 	grassMaterials.bigGrass.userData.update( t );
 	grassMaterials.waterGrass.userData.update( t );
 
-	camera.userData.update();
+	camera.userData.update( dtRatio );
 
 }
