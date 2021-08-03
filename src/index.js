@@ -61,7 +61,7 @@ waterSSREffect.uniforms[ 'tReflection' ].value = reflectionRenderTarget.texture;
 composer.addPass( waterSSREffect );
 
 const colorAverageEffect = new ShaderPass( postprosColorAverage );
-colorAverageEffect.uniforms[ 'amount' ].value = 0.6;
+colorAverageEffect.uniforms[ 'amount' ].value = 0.65;
 composer.addPass( colorAverageEffect );
 
 const aaEffect = new ShaderPass( FXAAShader );
