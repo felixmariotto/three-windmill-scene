@@ -48,7 +48,7 @@ const shader = {
 				reflectionColor.z -= 0.55 * waterFragT;
 
 				// reflection power
-				vec3 darkColor = vec3( 48.0/255.0, 43.0/255.0, 34.0/255.0 ) * sceneColor.xyz;
+				vec3 darkColor = vec3( 0.188, 0.168, 0.133 ) * 0.9 + 0.1 * sceneColor.xyz;
 				float reflectionPower = ( waterValue.x * 2.0 + 0.5 ) * ( 0.3 + 0.7 * ( 1.0 - waterFragT ) );
 				reflectionColor = mix( darkColor, reflectionColor, reflectionPower );
 
@@ -56,7 +56,6 @@ const shader = {
 				vec3 blendedColor = mix( reflectionColor, sceneColor.xyz, vUv.y );
 
 				sceneColor = vec4( reflectionColor, 1.0 );
-				// sceneColor = vec4( vec3( blendT ), 1.0 );
 
 			}
 

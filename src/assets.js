@@ -1,7 +1,6 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 import landscapeURL from '../assets/windmill.glb';
 
@@ -96,9 +95,6 @@ function makeInstancedMeshFrom( container, material ) {
 export default new Promise( (resolve) => {
 
 	new GLTFLoader().load( landscapeURL, (glb) => {
-
-		// console.log( glb )
-		// debugger
 
 		const animations = glb.animations;
 		const windmill = glb.scene.getObjectByName( 'windmill' );

@@ -27,9 +27,9 @@ const shader = {
 			// averaging
 			vec3 color = texture2D( tDiffuse, vUv ).xyz;
 			vec3 average = vec3( ( color.x + color.y + color.z ) / 3.0 );
-			vec3 averagedColor = mix( color, average, amount );
+			vec3 finalColor = mix( color, average, amount );
 
-			gl_FragColor = vec4( averagedColor, 1.0 );
+			gl_FragColor = vec4( finalColor, 1.0 );
 		}
 	`
 

@@ -12,7 +12,7 @@ import waterMaterial from './materials/waterMaterial.js';
 import grassMaterials from './materials/grassMaterials.js';
 import camera from './camera.js';
 import postprosColorAverage from './postprosColorAverage.js';
-import postprosWaterSSR from './postprosWaterSSR.js';
+import postprosWater from './postprosWater.js';
 
 import nx from '../assets/cubemap/nx.jpg';
 import ny from '../assets/cubemap/ny.jpg';
@@ -37,12 +37,13 @@ const waterScene = new THREE.Scene();
 waterScene.background = new THREE.Color( 'black' );
 
 const renderer = new THREE.WebGLRenderer();
+renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize( WIDTH, HEIGHT );
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.append( renderer.domElement );
 
 const waterRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
-const reflectionRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
+const reflectionRenderTarget = new THREE.WebGLRenderTarget( WIDTH / 2, HEIGHT / 2 );
 
 const clock = new THREE.Clock();
 
@@ -54,13 +55,13 @@ document.body.appendChild( stats.dom );
 const composer = new EffectComposer( renderer );
 composer.addPass( new RenderPass( scene, camera ) );
 
-const waterSSREffect = new ShaderPass( postprosWaterSSR );
+const waterSSREffect = new ShaderPass( postprosWater );
 waterSSREffect.uniforms[ 'tWater' ].value = waterRenderTarget.texture;
 waterSSREffect.uniforms[ 'tReflection' ].value = reflectionRenderTarget.texture;
 composer.addPass( waterSSREffect );
 
 const colorAverageEffect = new ShaderPass( postprosColorAverage );
-colorAverageEffect.uniforms[ 'amount' ].value = 0.7;
+colorAverageEffect.uniforms[ 'amount' ].value = 0.6;
 composer.addPass( colorAverageEffect );
 
 const aaEffect = new ShaderPass( FXAAShader );
@@ -78,7 +79,7 @@ window.addEventListener( 'resize', () => {
 	renderer.setSize( WIDTH, HEIGHT );
 	composer.setSize( WIDTH, HEIGHT );
 	waterRenderTarget.setSize( WIDTH, HEIGHT );
-	reflectionRenderTarget.setSize( WIDTH, HEIGHT );
+	reflectionRenderTarget.setSize( WIDTH / 2, HEIGHT / 2 );
 } );
 
 // lights

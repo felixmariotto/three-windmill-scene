@@ -9,7 +9,6 @@ import waterTexture2URL from '../../assets/waterNormal2.jpg'
 
 const vertexShader = `
 	varying vec2 vUv;
-	varying vec4 vPos;
 
 	uniform float time;
 	uniform sampler2D water_texture1;
@@ -27,22 +26,19 @@ const vertexShader = `
 
 		// DISPLACEMENT
 
-		float noise = smoothNoise( mvPosition.xz + vec2( time * 1.2, time * 1.7 ) );
+		float noise = smoothNoise( mvPosition.xz * 0.2 + vec2( time * 1.2, time * 1.7 ) );
 
-		mvPosition.y += noise * 0.5;
+		mvPosition.y += noise * 0.75;
 
 		//
 
-		vec4 modelViewPosition = modelViewMatrix * mvPosition;
-		vPos = modelViewPosition;
-		gl_Position = projectionMatrix * modelViewPosition;
+		gl_Position = projectionMatrix * modelViewMatrix * mvPosition;
 
 	}
 `;
 
 const fragmentShader = `
 	varying vec2 vUv;
-	varying vec4 vPos;
 
 	uniform float time;
 	uniform sampler2D water_texture1;
@@ -58,15 +54,11 @@ const fragmentShader = `
 
 		vec3 waterNormal1 = texture2D( water_texture1, 3.0 * vUv + vec2( t * -0.03, t * 0.06 ) ).xyz;
 		vec3 waterNormal2 = texture2D( water_texture2, 3.0 * vUv + vec2( t * 0.04, t * 0.03 ) ).xyz;
-		waterNormal1 = normalize( waterNormal1 );
-		waterNormal2 = normalize( waterNormal2 );
 		vec3 waterNormal = normalize( waterNormal1 * waterNormal2 );
 
 		//
 
-		vec3 color = vec3( waterNormal.y, 0, 0 );
-
-		gl_FragColor = vec4( color, 1.0 );
+		gl_FragColor = vec4( waterNormal.y, 0.0, 0.0, 1.0 );
 
 	}
 `;
