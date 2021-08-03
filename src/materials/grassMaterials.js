@@ -65,7 +65,7 @@ function makeGrassMaterial( textureURL, isReflection ) {
 			${
 				isReflection ?
 					'gl_FragColor = vec4( vec3( 0 ), sampledC.a );' :
-					'gl_FragColor = sampledC;'
+					'gl_FragColor = vec4( sampledC.xyz, 1.0 );'
 			}
 			
 		}

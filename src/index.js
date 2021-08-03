@@ -49,6 +49,8 @@ const clock = new THREE.Clock();
 const dtClock = new THREE.Clock();
 
 const stats = new Stats();
+stats.dom.style.bottom = '0';
+stats.dom.style.top = 'auto';
 document.body.appendChild( stats.dom );
 
 // postprocessing
