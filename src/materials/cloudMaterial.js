@@ -1,6 +1,6 @@
 
 import * as THREE from 'three';
-
+import shaderUtils from './shaderUtils.js';
 import textureURL from '../../assets/cloud.jpg';
 
 //
@@ -30,9 +30,7 @@ const fragmentShader = `
 
 	uniform sampler2D map;
 
-	float easeOutExpo( float x ) {
-		return x == 1.0 ? 1.0 : 1.0 - pow( 2.0, -15.0 * x );
-	}
+	${ shaderUtils.easeOutExpo }
 
 	void main() {
 

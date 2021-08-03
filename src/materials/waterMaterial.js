@@ -83,15 +83,14 @@ waterTexture2.wrapT = THREE.RepeatWrapping;
 
 const uniforms = {
 	time: { value: 0 },
-	water_texture1: { value: waterTexture1 },
-	water_texture2: { value: waterTexture2 }
+	'water_texture1': { value: waterTexture1 },
+	'water_texture2': { value: waterTexture2 }
 }
 
 const material = new THREE.ShaderMaterial({
 	vertexShader,
 	fragmentShader,
 	uniforms,
-	side: THREE.DoubleSide,
 	transparent: true
 } );
 

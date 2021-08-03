@@ -4,9 +4,8 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
-import { BrightnessContrastShader } from 'three/examples/jsm/shaders/BrightnessContrastShader.js';
 
-import RenderTargetHelper from 'three-rt-helper';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 import assets from './assets.js';
 import waterMaterial from './materials/waterMaterial.js';
@@ -45,10 +44,10 @@ document.body.append( renderer.domElement );
 const waterRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 const reflectionRenderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT );
 
-// const renderTargetHelper = RenderTargetHelper( renderer, waterRenderTarget );
-// document.body.append( renderTargetHelper );
-
 const clock = new THREE.Clock();
+
+const stats = new Stats();
+document.body.appendChild( stats.dom );
 
 // postprocessing
 
@@ -63,13 +62,6 @@ composer.addPass( waterSSREffect );
 const colorAverageEffect = new ShaderPass( postprosColorAverage );
 colorAverageEffect.uniforms[ 'amount' ].value = 0.7;
 composer.addPass( colorAverageEffect );
-
-/*
-const brigthContrastEffect = new ShaderPass( BrightnessContrastShader );
-brigthContrastEffect.uniforms[ 'brightness' ].value = -0.1;
-brigthContrastEffect.uniforms[ 'contrast' ].value = -0.1;
-composer.addPass( brigthContrastEffect );
-*/
 
 const aaEffect = new ShaderPass( FXAAShader );
 composer.addPass( aaEffect );
@@ -160,17 +152,14 @@ function loop() {
 
 	//
 
-	// renderTargetHelper.update();
-
 	renderer.setRenderTarget();
 	renderer.clear();
 
 	composer.render();
 
-	//
+	stats.update();
 
-	// renderer.render( scene, camera );
-	// console.log( renderer.info.render )
+	//
 
 	requestAnimationFrame( loop );
 

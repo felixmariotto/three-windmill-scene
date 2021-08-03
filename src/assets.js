@@ -1,7 +1,7 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+// import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 import landscapeURL from '../assets/windmill.glb';
 
@@ -27,7 +27,6 @@ const CLOUD_MIN_SIZE = 0.1;
 const CLOUD_MAX_SIZE = 0.45;
 const CLOUDS_SPEED = 0.0005;
 const cloudDummies = [];
-const cloudVelocity = 0.5;
 
 const clouds = new THREE.InstancedMesh(
 	new THREE.PlaneGeometry(),

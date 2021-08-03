@@ -11,7 +11,6 @@ const targetPos = new THREE.Vector3();
 const targetDir = new THREE.Vector3( 0, 0.25, -1 );
 const lastDir = new THREE.Vector3( 0, 0.25, -1 );
 const _vec = new THREE.Vector3();
-const _vec0 = new THREE.Vector3();
 
 const aspect = window.innerWidth / window.innerHeight;
 const camera = new THREE.PerspectiveCamera( 65, aspect, 0.1, 5000 );
@@ -23,7 +22,7 @@ if ( USE_CONTROLS ) {
 	camera.position.set( 0, 10, 100 );
 	camera.lookAt( 0, 10, 0 );
 
-	const controls = new OrbitControls( camera, document.body );
+	new OrbitControls( camera, document.body );
 
 }
 
