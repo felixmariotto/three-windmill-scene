@@ -2,15 +2,19 @@
 import * as THREE from 'three';
 import shaderUtils from './shaderUtils.js';
 
-import grassTextureURL from '../../assets/grass.png';
-import bigGrassTextureURL from '../../assets/big_grass.png';
-import waterGrassTextureURL from '../../assets/water_grass.png';
+import grassTextureURL from '../../assets/grass/grass.png';
+import bigGrassTextureURL from '../../assets/grass/big_grass.png';
+import waterGrassTextureURL from '../../assets/grass/water_grass.png';
+
+import grassMaskTextureURL from '../../assets/grass/grass_mask.png';
+import bigGrassMaskTextureURL from '../../assets/grass/big_grass_mask.png';
+import waterGrassMaskTextureURL from '../../assets/grass/water_grass_mask.png';
 
 //
 
 const textureLoader = new THREE.TextureLoader();
 
-function makeGrassMaterial( textureURL, isReflection ) {
+function makeGrassMaterial( textureURL, maskTextureURL, isReflection ) {
 
 	const vertexShader = `
 
@@ -53,19 +57,30 @@ function makeGrassMaterial( textureURL, isReflection ) {
 
 		varying vec2 vUv;
 		uniform sampler2D map;
+		uniform sampler2D mask;
+
+		${ shaderUtils.easeInCubic }
 
 		void main() {
 
+			// unfortunately Webkit premultiplies PNG alpha, so we have to
+			// have two different images for the diffuse and the mask, so we
+			// can manually reproduce Blink behavior.
+
 			vec2 uv = vUv;
 			uv.y = 1.0 - uv.y;
-			vec4 sampledC = texture2D( map, uv );
+			vec3 sampledDiffuse = texture2D( map, uv ).xyz;
+			float sampledAlpha = texture2D( mask, uv ).x;
 
-			if ( sampledC.a < 0.1 ) discard;
+			if ( sampledAlpha < 0.1 ) discard;
+
+			// increase color lighness when small alpha value, to avoid dark rim.
+			sampledDiffuse += sampledDiffuse * easeInCubic( 1.0 - sampledAlpha ) * 8.0;
 
 			${
 				isReflection ?
-					'gl_FragColor = vec4( vec3( 0 ), sampledC.a );' :
-					'gl_FragColor = vec4( sampledC.xyz, 1.0 );'
+					'gl_FragColor = vec4( vec3( 0 ), sampledAlpha );' :
+					'gl_FragColor = vec4( sampledDiffuse, 1.0 );'
 			}
 			
 		}
@@ -73,7 +88,8 @@ function makeGrassMaterial( textureURL, isReflection ) {
 
 	const uniforms = {
 		time: { value: 0 },
-		map: { value: textureLoader.load( textureURL ) }
+		map: { value: textureLoader.load( textureURL ) },
+		mask: { value: textureLoader.load( maskTextureURL ) }
 	}
 
 	const material = new THREE.ShaderMaterial( {
@@ -94,13 +110,13 @@ function makeGrassMaterial( textureURL, isReflection ) {
 
 //
 
-const grass = makeGrassMaterial( grassTextureURL );
-const bigGrass = makeGrassMaterial( bigGrassTextureURL );
-const waterGrass = makeGrassMaterial( waterGrassTextureURL );
+const grass = makeGrassMaterial( grassTextureURL, grassMaskTextureURL );
+const bigGrass = makeGrassMaterial( bigGrassTextureURL, bigGrassMaskTextureURL );
+const waterGrass = makeGrassMaterial( waterGrassTextureURL, waterGrassMaskTextureURL );
 
-const grassReflection = makeGrassMaterial( grassTextureURL, true );
-const bigGrassReflection = makeGrassMaterial( bigGrassTextureURL, true );
-const waterGrassReflection = makeGrassMaterial( waterGrassTextureURL, true );
+const grassReflection = makeGrassMaterial( grassTextureURL, grassMaskTextureURL, true );
+const bigGrassReflection = makeGrassMaterial( bigGrassTextureURL, bigGrassMaskTextureURL, true );
+const waterGrassReflection = makeGrassMaterial( waterGrassTextureURL, waterGrassMaskTextureURL, true );
 
 //
 

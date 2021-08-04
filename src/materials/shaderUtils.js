@@ -22,6 +22,12 @@ const smoothNoise = `
 	}
 `;
 
+const easeInCubic = `
+	float easeInCubic( float x ) {
+		return x * x * x;
+	}
+`;
+
 const easeOutExpo = `
 	float easeOutExpo( float x ) {
 		return x == 1.0 ? 1.0 : 1.0 - pow( 2.0, -15.0 * x );
@@ -30,5 +36,6 @@ const easeOutExpo = `
 
 export default {
 	smoothNoise,
+	easeInCubic,
 	easeOutExpo
 }
